@@ -1,14 +1,14 @@
-= `WHERE visible` + `cron` job vs `WHERE current_timestamp < expired_at`
+= `boolean` vs `timestamp`
 
 This project is created because there are creative engineers believe that having an indexed boolean column with cron jobs integration is better than pure SQL queries.
 
 For example of filtering expired posts in a database, instead of querying by `SELECT * FROM posts WHERE current_timestamp < expired_at`.
-They tend to create an extra boolean column named `visible`, query by `SELECT * FROM posts WHERE visible`, and create another cron job to synchronize the `visible` column with `expired_at` periodically.
+They tend to create an extra boolean column named `visible`, query by `SELECT * FROM posts WHERE visible`, and write another cron job to scan the whole table in order to synchronize `visible` with `expired_at` periodically.
 
 == TLDR
 
 . With 10,000,000 rows, the difference between the 2 are less then 1ms.
-. By using boolean column and cron job, we gain little benefit (by few milliseconds) but increase the difficulty of maintainability.
+. By using boolean column and cron job, we gain little benefit (by few microseconds) but increase the difficulty of maintainability.
 
 == Benchmark
 
