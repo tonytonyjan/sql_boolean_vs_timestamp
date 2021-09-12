@@ -1,0 +1,21 @@
+#!/bin/sh
+set -euo pipefail
+
+if test $# -ne 2; then
+  cat <<MSG
+Usage: $0 SQL ITERATION
+Example: $0 'select * from users' 10000
+MSG
+  exit 1
+fi
+
+sql="$1"
+shift
+iteration="$1"
+shift
+
+yes "EXPLAIN (ANALYZE true, FORMAT JSON) $sql;" |
+  head -n $iteration |
+  psql -U postgres -P pager=off -Aqt |
+  jq -sc '[.[][0] | ."Execution Time"]' |
+  ruby -rjson -e 'a = JSON.parse($stdin.read); puts a.sum/a.size'

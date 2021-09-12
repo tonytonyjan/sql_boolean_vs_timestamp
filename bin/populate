@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'time'
+
+UINT_MAX = 2**32
+
+n = ARGV[0].nil? ? 10_000_000 : ARGV[0].to_i
+now = Time.now
+1000.times do
+  expired_at = now + rand(UINT_MAX)
+  puts "#{expired_at.iso8601},true"
+end
+min = now - UINT_MAX
+n.times do
+  expired_at = min + rand(UINT_MAX)
+  puts "#{expired_at.iso8601},false"
+end
